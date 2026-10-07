@@ -1,5 +1,5 @@
 /* Service worker — app shell offline-first */
-const CACHE = 'iebt-ps-v1';
+const CACHE = 'iebt-ps-v2';
 const SHELL = [
   './',
   './index.html',

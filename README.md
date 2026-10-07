@@ -49,7 +49,7 @@ Os dados ficam no `localStorage` do navegador (vêm pré-carregados com **parcei
 
 ## Identidade visual
 
-As cores ficam em tokens CSS no topo de `styles.css` (`--brand-*`). Ajuste-os para a paleta oficial da IEBT. As cores das etapas foram validadas para daltonismo (protanopia/deuteranopia/tritanopia).
+Segue a identidade do site da IEBT: header branco com a marca "iebt innovation", botões em pílula com degradê laranja e roxo/índigo como cor de apoio. As cores ficam em tokens CSS no topo de `styles.css` (`--orange`, `--grad-cta`, `--brand-*`). As cores das etapas foram validadas para daltonismo (protanopia/deuteranopia/tritanopia).
 
 ## Estrutura
 
