@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>IEBT Partner Success</title>
+  <meta name="description" content="Gestão de Partner Success da IEBT Innovation — kanban de parceiros do lead ao churn.">
+  <meta name="theme-color" content="#0b2545" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0f1115" media="(prefers-color-scheme: dark)">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Partner Success">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Pular para o conteúdo</a>
+
+  <header class="topbar">
+    <div class="brand">
+      <img src="icons/icon.svg" alt="" width="32" height="32">
+      <div class="brand-text">
+        <strong>IEBT</strong>
+        <span>Partner Success</span>
+      </div>
+    </div>
+
+    <nav class="views" aria-label="Visões">
+      <button class="view-btn is-active" data-view="board" aria-current="page">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 4h4v16H4zM10 4h4v10h-4zM16 4h4v13h-4z"/></svg>
+        <span>Kanban</span>
+      </button>
+      <button class="view-btn" data-view="dashboard">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 20V10h3v10zm6.5 0V4h3v16zM17 20v-7h3v7z"/></svg>
+        <span>Indicadores</span>
+      </button>
+    </nav>
+
+    <div class="topbar-actions">
+      <button id="installBtn" class="btn btn-ghost" hidden>
+        <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14"/></svg>
+        <span>Instalar app</span>
+      </button>
+      <button id="menuBtn" class="icon-btn" aria-label="Mais opções" aria-haspopup="menu" aria-expanded="false">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="12" cy="19" r="1.6"/></svg>
+      </button>
+      <div id="appMenu" class="menu" role="menu" hidden>
+        <button role="menuitem" data-action="theme">Alternar tema claro/escuro</button>
+        <button role="menuitem" data-action="export">Exportar dados (JSON)</button>
+        <button role="menuitem" data-action="import">Importar dados (JSON)</button>
+        <button role="menuitem" data-action="csv">Exportar planilha (CSV)</button>
+        <hr>
+        <button role="menuitem" data-action="reset" class="danger">Restaurar dados de exemplo</button>
+      </div>
+      <input id="importFile" type="file" accept="application/json" hidden>
+    </div>
+  </header>
+
+  <section class="toolbar" aria-label="Filtros">
+    <label class="search">
+      <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <span class="sr-only">Buscar parceiro</span>
+      <input id="search" type="search" placeholder="Buscar parceiro, contato ou tag" autocomplete="off">
+    </label>
+    <div class="filters">
+      <label class="select">
+        <span class="sr-only">Responsável</span>
+        <select id="fOwner"><option value="">Todos os responsáveis</option></select>
+      </label>
+      <label class="select">
+        <span class="sr-only">Tipo de parceiro</span>
+        <select id="fType"><option value="">Todos os tipos</option></select>
+      </label>
+      <button id="fOverdue" class="chip" aria-pressed="false">
+        <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l2.5 2.5"/></svg>
+        Ações atrasadas
+      </button>
+      <button id="fClear" class="link-btn" hidden>Limpar filtros</button>
+    </div>
+    <button id="addBtn" class="btn btn-primary add-desktop">
+      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      Novo parceiro
+    </button>
+  </section>
+
+  <main id="main">
+    <!-- Kanban -->
+    <section id="boardView" class="view" aria-label="Quadro kanban">
+      <nav id="stageTabs" class="stage-tabs" aria-label="Etapas"></nav>
+      <div id="board" class="board"></div>
+    </section>
+
+    <!-- Dashboard -->
+    <section id="dashboardView" class="view" aria-label="Indicadores" hidden>
+      <div id="dashboard" class="dashboard"></div>
+    </section>
+  </main>
+
+  <button id="fab" class="fab" aria-label="Novo parceiro">
+    <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+  </button>
+
+  <nav class="bottom-nav" aria-label="Visões">
+    <button class="view-btn is-active" data-view="board" aria-current="page">
+      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 4h4v16H4zM10 4h4v10h-4zM16 4h4v13h-4z"/></svg>
+      <span>Kanban</span>
+    </button>
+    <button class="view-btn" data-view="dashboard">
+      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 20V10h3v10zm6.5 0V4h3v16zM17 20v-7h3v7z"/></svg>
+      <span>Indicadores</span>
+    </button>
+  </nav>
+
+  <!-- Partner dialog (create / edit / detail) -->
+  <dialog id="partnerDialog" class="sheet" aria-labelledby="pdTitle">
+    <form id="partnerForm" method="dialog" novalidate>
+      <header class="sheet-head">
+        <button type="button" class="icon-btn" data-close aria-label="Fechar">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+        <h2 id="pdTitle">Novo parceiro</h2>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </header>
+
+      <div class="sheet-body">
+        <div class="field">
+          <label for="pName">Nome do parceiro <span aria-hidden="true">*</span></label>
+          <input id="pName" name="name" required maxlength="80" placeholder="Ex.: Startup Alfa">
+          <p class="field-error" id="pNameErr" hidden>Informe o nome do parceiro.</p>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="pStage">Etapa</label>
+            <select id="pStage" name="stage"></select>
+          </div>
+          <div class="field">
+            <label for="pType">Tipo</label>
+            <select id="pType" name="type"></select>
+          </div>
+        </div>
+
+        <div class="field" id="reasonField" hidden>
+          <label for="pReason">Motivo <span id="reasonKind"></span></label>
+          <select id="pReason" name="reason"></select>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label for="pOwner">Responsável (Partner Success)</label>
+            <input id="pOwner" name="owner" list="ownerList" placeholder="Nome do responsável">
+            <datalist id="ownerList"></datalist>
+          </div>
+          <div class="field">
+            <label for="pValue">Valor do contrato (R$/mês)</label>
+            <input id="pValue" name="value" inputmode="decimal" placeholder="0">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="pHealth">Health score <output id="pHealthOut" for="pHealth">70</output></label>
+          <input id="pHealth" name="health" type="range" min="0" max="100" step="5" value="70">
+          <div class="range-legend" aria-hidden="true"><span>Em risco</span><span>Atenção</span><span>Saudável</span></div>
+        </div>
+
+        <fieldset class="group">
+          <legend>Próxima ação</legend>
+          <div class="grid-2">
+            <div class="field">
+              <label for="pNext">O que fazer</label>
+              <input id="pNext" name="nextAction" placeholder="Ex.: Reunião de kickoff">
+            </div>
+            <div class="field">
+              <label for="pNextDate">Quando</label>
+              <input id="pNextDate" name="nextActionDate" type="date">
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="group">
+          <legend>Contato principal</legend>
+          <div class="grid-3">
+            <div class="field">
+              <label for="pContact">Nome</label>
+              <input id="pContact" name="contactName" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="pEmail">E-mail</label>
+              <input id="pEmail" name="contactEmail" type="email" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="pPhone">Telefone</label>
+              <input id="pPhone" name="contactPhone" type="tel" autocomplete="off">
+            </div>
+          </div>
+        </fieldset>
+
+        <div class="field">
+          <label for="pTags">Tags <span class="hint">separadas por vírgula</span></label>
+          <input id="pTags" name="tags" placeholder="Ex.: Open Innovation, Energia">
+        </div>
+
+        <section id="activitySection" class="activity" hidden>
+          <h3>Atividades</h3>
+          <div class="note-form">
+            <label for="pNote" class="sr-only">Registrar nota</label>
+            <textarea id="pNote" rows="2" placeholder="Registrar nota, reunião ou próximo passo…"></textarea>
+            <button type="button" id="addNoteBtn" class="btn btn-secondary">Registrar</button>
+          </div>
+          <ol id="timeline" class="timeline"></ol>
+        </section>
+
+        <div class="danger-zone" id="dangerZone" hidden>
+          <button type="button" id="deleteBtn" class="btn btn-danger-ghost">Excluir parceiro</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Reason dialog when moving to Churn / Lost -->
+  <dialog id="reasonDialog" class="modal" aria-labelledby="rdTitle">
+    <form method="dialog" id="reasonForm">
+      <h2 id="rdTitle">Mover para Churn</h2>
+      <p id="rdText" class="muted">Registre o motivo para alimentar os indicadores.</p>
+      <div class="field">
+        <label for="rdReason">Motivo</label>
+        <select id="rdReason" required></select>
+      </div>
+      <div class="field">
+        <label for="rdNote">Comentário (opcional)</label>
+        <textarea id="rdNote" rows="2"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button value="cancel" class="btn btn-ghost" formnovalidate>Cancelar</button>
+        <button value="ok" class="btn btn-primary">Confirmar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Move-to sheet (mobile + keyboard alternative to drag & drop) -->
+  <dialog id="moveDialog" class="modal" aria-labelledby="mdTitle">
+    <form method="dialog">
+      <h2 id="mdTitle">Mover parceiro</h2>
+      <p id="mdText" class="muted"></p>
+      <div id="moveOptions" class="move-options"></div>
+      <div class="modal-actions">
+        <button value="cancel" class="btn btn-ghost">Cancelar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
